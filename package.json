@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.75.1",
+    "@txnlab/use-wallet-react": "^4.3.1"
+  }
+}

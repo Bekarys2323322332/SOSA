@@ -2,27 +2,31 @@
 import { useWallet } from '@txnlab/use-wallet-react'
 import React, { useState } from 'react'
 import ConnectWallet from './components/ConnectWallet'
-import Transact from './components/Transact'
-import AppCalls from './components/AppCalls'
+import PostIdea from './PostIdea'
+import InvestorView from './InvestorView'
 
 interface HomeProps { }
 
 const Home: React.FC<HomeProps> = () => {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
-  const [openDemoModal, setOpenDemoModal] = useState<boolean>(false)
-  const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false)
+  const [userType, setUserType] = useState<'startuper' | 'investor' | null>(null)
+  const [openPostModal, setOpenPostModal] = useState<boolean>(false)
   const { activeAddress } = useWallet()
 
   const toggleWalletModal = () => {
     setOpenWalletModal(!openWalletModal)
   }
 
-  const toggleDemoModal = () => {
-    setOpenDemoModal(!openDemoModal)
+  const selectUserType = (type: 'startuper' | 'investor') => {
+    setUserType(type)
+    if (type === 'startuper') {
+      setOpenPostModal(true)
+    }
   }
 
-  const toggleAppCallsModal = () => {
-    setAppCallsDemoModal(!appCallsDemoModal)
+  const resetUserType = () => {
+    setUserType(null)
+    setOpenPostModal(false)
   }
 
   return (
@@ -35,26 +39,58 @@ const Home: React.FC<HomeProps> = () => {
 
           <div className="grid">
             <div className="divider" />
-            <button data-test-id="connect-wallet" className="btn m-2" onClick={toggleWalletModal}>
-              Wallet Connection
-            </button>
 
-            {activeAddress && (
-              <button data-test-id="transactions-demo" className="btn m-2" onClick={toggleDemoModal}>
-                Transactions Demo
+            {!activeAddress ? (
+              <button data-test-id="connect-wallet" className="btn m-2" onClick={toggleWalletModal}>
+                Wallet Connection
               </button>
-            )}
-
-            {activeAddress && (
-              <button data-test-id="appcalls-demo" className="btn m-2" onClick={toggleAppCallsModal}>
-                Contract Interactions Demo
+            ) : !userType ? (
+              <>
+                <p className="mb-4 text-gray-600">Choose your role:</p>
+                <button
+                  data-test-id="select-startuper"
+                  className="btn btn-primary m-2"
+                  onClick={() => selectUserType('startuper')}
+                >
+                  I'm a Startuper
+                </button>
+                <button
+                  data-test-id="select-investor"
+                  className="btn btn-secondary m-2"
+                  onClick={() => selectUserType('investor')}
+                >
+                  I'm an Investor
+                </button>
+                <button
+                  className="btn btn-ghost btn-sm m-2"
+                  onClick={toggleWalletModal}
+                >
+                  Change Wallet
+                </button>
+              </>
+            ) : (
+              <button
+                className="btn btn-ghost m-2"
+                onClick={resetUserType}
+              >
+                ← Back to Role Selection
               </button>
             )}
           </div>
 
+          {userType === 'startuper' && (
+            <PostIdea
+              openModal={openPostModal}
+              setModalState={setOpenPostModal}
+              walletAddress={activeAddress!}
+            />
+          )}
+
+          {userType === 'investor' && (
+            <InvestorView walletAddress={activeAddress!} />
+          )}
+
           <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
-          <Transact openModal={openDemoModal} setModalState={setOpenDemoModal} />
-          <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
         </div>
       </div>
     </div>
