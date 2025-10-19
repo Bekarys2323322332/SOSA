@@ -1,17 +1,12 @@
 // src/components/PostIdea.tsx
 import React, { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '../utils/supabaseClient'
 
 interface PostIdeaProps {
   openModal: boolean
   setModalState: (state: boolean) => void
   walletAddress: string
 }
-
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 const PostIdea: React.FC<PostIdeaProps> = ({ openModal, setModalState, walletAddress }) => {
   const [formData, setFormData] = useState({

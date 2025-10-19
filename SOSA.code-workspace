@@ -1,14 +1,16 @@
 {
   "folders": [
     {
-      "path": "./",
-      "name": "ROOT"
+      "name": "ROOT",
+      "path": "."
     },
     {
-      "path": "./projects/SOSA-contracts"
+      "name": "SOSA-contracts",
+      "path": "projects/SOSA-contracts"
     },
     {
-      "path": "./projects/SOSA-frontend"
+      "name": "SOSA-frontend",
+      "path": "projects/SOSA-frontend"
     }
   ],
   "settings": {
@@ -21,7 +23,7 @@
   "extensions": {
     "recommendations": ["joshx.workspace-terminals"]
   },
-  
+
   "tasks": {
     "version": "2.0.0",
     "tasks": [

@@ -2,8 +2,8 @@
 import { useWallet } from '@txnlab/use-wallet-react'
 import React, { useState } from 'react'
 import ConnectWallet from './components/ConnectWallet'
-import PostIdea from './PostIdea'
-import InvestorView from './InvestorView'
+import PostIdea from './components/PostIdea'
+import InvestorView from './components/InvestorView'
 
 interface HomeProps { }
 

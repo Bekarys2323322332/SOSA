@@ -1,9 +1,8 @@
-// src/components/InvestorView.tsx
 import React, { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { useWallet } from '@txnlab/use-wallet-react'
 import algosdk from 'algosdk'
 import { useSnackbar } from 'notistack'
+import { supabase } from '../utils/supabaseClient'
 
 interface InvestorViewProps {
   walletAddress: string
@@ -21,11 +20,6 @@ interface StartupIdea {
   status: 'open' | 'funded' | 'expired'
   created_at: string
 }
-
-// Initialize Supabase client
-const supabaseUrl = process.env.VITE_SUPABASE_URL || ''
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || ''
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 const InvestorView: React.FC<InvestorViewProps> = ({ walletAddress }) => {
   const [ideas, setIdeas] = useState<StartupIdea[]>([])
@@ -127,12 +121,12 @@ const InvestorView: React.FC<InvestorViewProps> = ({ walletAddress }) => {
       const signedTxns = await transactionSigner([txn], [0])
 
       // Send transaction to network
-      const { txId } = await algodClient.sendRawTransaction(signedTxns[0]).do()
+      const { txid } = await algodClient.sendRawTransaction(signedTxns[0]).do()
 
       enqueueSnackbar('Transaction sent! Waiting for confirmation...', { variant: 'info' })
 
       // Wait for confirmation
-      await algosdk.waitForConfirmation(algodClient, txId, 4)
+      await algosdk.waitForConfirmation(algodClient, txid, 4)
 
       // Calculate share percentage based on investment
       const sharePercentage = (amount / idea.money_needed) * 100
@@ -146,7 +140,7 @@ const InvestorView: React.FC<InvestorViewProps> = ({ walletAddress }) => {
             investor_address: walletAddress,
             amount: amount,
             share_percentage: sharePercentage,
-            transaction_id: txId,
+            transaction_id: txid,
             invested_at: new Date().toISOString()
           }
         ])
@@ -245,8 +239,8 @@ const InvestorView: React.FC<InvestorViewProps> = ({ walletAddress }) => {
                 </div>
                 <div className="col-span-2">
                   <span className={`badge badge-sm ${idea.status === 'open' ? 'badge-success' :
-                      idea.status === 'funded' ? 'badge-info' :
-                        'badge-error'
+                    idea.status === 'funded' ? 'badge-info' :
+                      'badge-error'
                     }`}>
                     {idea.status.toUpperCase()}
                   </span>
